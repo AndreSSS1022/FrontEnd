@@ -2,20 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario de Autos y Películas</title>
+    <title>Cars & Movies Inventory</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 2rem; }
         h1 { color: #333; }
         .item { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
         .item-title { font-weight: bold; }
+        .actions button { margin-right: 0.5rem; }
+        form { margin-bottom: 2rem; }
+        label { display: block; margin-top: 0.5rem; }
     </style>
 </head>
 <body>
-    <h1>Inventario de Autos</h1>
-    <div id="cars-list"></div>
+    <h1>Inventario de Autos y Películas</h1>
 
-    <h1>Inventario de Películas</h1>
-    <div id="movies-list"></div>
+    <form id="addForm">
+        <h2>Agregar nuevo</h2>
+        <label>Título: <input type="text" id="title" required></label>
+        <label>Año: <input type="number" id="year" required></label>
+        <label>Director: <input type="text" id="director"></label>
+        <label>Marca (car): <input type="text" id="brand"></label>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <div id="items-list"></div>
 
     <script src="script.js"></script>
 </body>

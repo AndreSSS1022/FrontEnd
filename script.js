@@ -1,42 +1,75 @@
-// Cambia las URLs según la API real que exponga tu backend Python
-const API_BASE = "https://carsmoviesinventoryproject-production.up.railway.app/api/v1/carsmovies?page=0&size=5&sort=carMovieYear,desc"; // Ajusta el puerto si es necesario
+const API_BASE = 'https://carsmoviesinventoryproject-production.up.railway.app/api/v1/carsmovies';
 
-// Obtener y mostrar autos
-fetch(`${API_BASE}/cars`)
-    .then(response => response.json())
-    .then(cars => {
-        const carsList = document.getElementById('cars-list');
-        cars.forEach(car => {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `
-                <div class="item-title">${car.name}</div>
-                <div>Marca: ${car.brand}</div>
-                <div>Año: ${car.year}</div>
-            `;
-            carsList.appendChild(div);
+function fetchItems() {
+    fetch(`${API_BASE}?page=0&size=10&sort=carMovieYear,desc`)
+        .then(res => res.json())
+        .then(data => {
+            const items = data.content || data; // Ajusta según la respuesta real
+            const list = document.getElementById('items-list');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <div class="item-title">${item.carMovieTitle} (${item.carMovieYear})</div>
+                    <div>Director: ${item.carMovieDirector || ''}</div>
+                    <div>Marca: ${item.carMovieBrand || ''}</div>
+                    <div class="actions">
+                        <button onclick="editItem('${item.id}')">Editar</button>
+                        <button onclick="deleteItem('${item.id}')">Borrar</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
         });
-    })
-    .catch(error => {
-        document.getElementById('cars-list').textContent = 'Error cargando autos.';
-    });
+}
 
-// Obtener y mostrar películas
-fetch(`${API_BASE}/movies`)
-    .then(response => response.json())
-    .then(movies => {
-        const moviesList = document.getElementById('movies-list');
-        movies.forEach(movie => {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `
-                <div class="item-title">${movie.title}</div>
-                <div>Director: ${movie.director}</div>
-                <div>Año: ${movie.year}</div>
-            `;
-            moviesList.appendChild(div);
-        });
-    })
-    .catch(error => {
-        document.getElementById('movies-list').textContent = 'Error cargando películas.';
+document.getElementById('addForm').onsubmit = function(e) {
+    e.preventDefault();
+    const title = document.getElementById('title').value;
+    const year = document.getElementById('year').value;
+    const director = document.getElementById('director').value;
+    const brand = document.getElementById('brand').value;
+    const body = {
+        carMovieTitle: title,
+        carMovieYear: year,
+        carMovieDirector: director,
+        carMovieBrand: brand
+    };
+    fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    }).then(() => {
+        fetchItems();
+        document.getElementById('addForm').reset();
     });
+};
+
+window.editItem = function(id) {
+    const newTitle = prompt('Nuevo título:');
+    const newYear = prompt('Nuevo año:');
+    const newDirector = prompt('Nuevo director:');
+    const newBrand = prompt('Nueva marca:');
+    if (newTitle && newYear) {
+        fetch(`${API_BASE}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                carMovieTitle: newTitle,
+                carMovieYear: newYear,
+                carMovieDirector: newDirector,
+                carMovieBrand: newBrand
+            })
+        }).then(() => fetchItems());
+    }
+};
+
+window.deleteItem = function(id) {
+    if (confirm('¿Seguro que deseas borrar este elemento?')) {
+        fetch(`${API_BASE}/${id}`, { method: 'DELETE' })
+            .then(() => fetchItems());
+    }
+};
+
+fetchItems();

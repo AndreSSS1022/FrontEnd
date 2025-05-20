@@ -3,7 +3,7 @@ const API_BASE = 'https://carsmoviesinventoryproject-production.up.railway.app/a
 async function fetchItems() {
     const res = await fetch(`${API_BASE}?page=0&size=10&sort=carMovieYear,desc`);
     const data = await res.json();
-    const items = data.content || [];
+    const items = data.Movies || [];
     const list = document.getElementById('items-list');
     list.innerHTML = '';
     if (items.length === 0) {
@@ -15,10 +15,9 @@ async function fetchItems() {
         div.className = 'card';
         div.innerHTML = `
             <div class="card-body">
-                <h5 class="card-title">${item.carMovieTitle} <span class="badge bg-secondary">${item.carMovieYear}</span></h5>
-                <p class="card-text mb-1"><strong>Director:</strong> ${item.carMovieDirector || '-'} </p>
-                <p class="card-text mb-2"><strong>Marca:</strong> ${item.carMovieBrand || '-'}</p>
-                <button class="btn btn-primary btn-sm me-2" onclick="showEditForm('${item.id}', '${item.carMovieTitle}', '${item.carMovieYear}', '${item.carMovieDirector || ''}', '${item.carMovieBrand || ''}')">Editar</button>
+                <h5 class="card-title">${item.carMovieName} <span class="badge bg-secondary">${item.carMovieYear}</span></h5>
+                <p class="card-text mb-1"><strong>Duración:</strong> ${item.duration || '-'} min</p>
+                <button class="btn btn-primary btn-sm me-2" onclick="showEditForm('${item.id}', '${item.carMovieName}', '${item.carMovieYear}', '${item.duration || ''}')">Editar</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteItem('${item.id}')">Borrar</button>
                 <div id="edit-form-${item.id}" style="display:none; margin-top:1rem;"></div>
             </div>
@@ -31,39 +30,37 @@ document.getElementById('addForm').onsubmit = async function(e) {
     e.preventDefault();
     const title = document.getElementById('title').value;
     const year = document.getElementById('year').value;
-    const director = document.getElementById('director').value;
-    const brand = document.getElementById('brand').value;
+    const director = document.getElementById('director').value; // Si tu API lo usa
+    const brand = document.getElementById('brand').value; // Si tu API lo usa
+    const duration = 120; // Puedes poner un valor por defecto o agregar un campo en el formulario
+
     await fetch(API_BASE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            carMovieTitle: title,
+            carMovieName: title,
             carMovieYear: year,
-            carMovieDirector: director,
-            carMovieBrand: brand
+            duration: duration
         })
     });
     document.getElementById('addForm').reset();
     fetchItems();
 };
 
-window.showEditForm = function(id, title, year, director, brand) {
+window.showEditForm = function(id, title, year, duration) {
     const formDiv = document.getElementById(`edit-form-${id}`);
     formDiv.style.display = 'block';
     formDiv.innerHTML = `
         <form onsubmit="updateItem(event, '${id}')">
             <div class="row g-2">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <input type="text" class="form-control" id="edit-title-${id}" value="${title}" required>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <input type="number" class="form-control" id="edit-year-${id}" value="${year}" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" id="edit-director-${id}" value="${director}">
-                </div>
-                <div class="col-md-3">
-                    <input type="text" class="form-control" id="edit-brand-${id}" value="${brand}">
+                    <input type="number" class="form-control" id="edit-duration-${id}" value="${duration}">
                 </div>
                 <div class="col-md-1">
                     <button type="submit" class="btn btn-success btn-sm w-100">Guardar</button>
@@ -84,16 +81,14 @@ window.updateItem = async function(e, id) {
     e.preventDefault();
     const title = document.getElementById(`edit-title-${id}`).value;
     const year = document.getElementById(`edit-year-${id}`).value;
-    const director = document.getElementById(`edit-director-${id}`).value;
-    const brand = document.getElementById(`edit-brand-${id}`).value;
+    const duration = document.getElementById(`edit-duration-${id}`).value;
     await fetch(`${API_BASE}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            carMovieTitle: title,
+            carMovieName: title,
             carMovieYear: year,
-            carMovieDirector: director,
-            carMovieBrand: brand
+            duration: duration
         })
     });
     hideEditForm(id);

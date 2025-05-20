@@ -1,5 +1,5 @@
 // Cambia las URLs según la API real que exponga tu backend Python
-const API_BASE = 'http://localhost:5000'; // Ajusta el puerto si es necesario
+const API_BASE = "https://carsmoviesinventoryproject-production.up.railway.app/api/v1/carsmovies?page=0&size=5&sort=carMovieYear,desc"; // Ajusta el puerto si es necesario
 
 // Obtener y mostrar autos
 fetch(`${API_BASE}/cars`)

@@ -1,4 +1,4 @@
-const API_BASE = 'https://carsmoviesinventoryproject-production.up.railway.app/api/v1/carsmovies';
+const API_BASE = 'http://127.0.0.1:8080/api/v1/feid';
 
 async function fetchItems() {
     const res = await fetch(`${API_BASE}?page=0&size=10&sort=carMovieYear,desc`);

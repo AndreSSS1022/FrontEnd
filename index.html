@@ -1,27 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inventario Feid API</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars Movies CRUD</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Inventario Feid API</h1>
-
-    <div class="card add-card">
-      <h4>Agregar nuevo registro</h4>
-      <form id="addForm" class="form-row">
-        <input type="text" id="name" placeholder="Nombre" required />
-        <input type="number" id="year" placeholder="Año" required />
-        <button type="submit">Agregar</button>
-      </form>
+    <div class="container">
+        <h1>Cars Movies CRUD</h1>
+        
+        <!-- Status message -->
+        <div id="status" class="status hidden"></div>
+        
+        <!-- Add/Edit Form -->
+        <div class="form-container">
+            <h2 id="form-title">Agregar Nueva Película</h2>
+            <form id="movie-form">
+                <input type="hidden" id="movie-id">
+                <div class="form-group">
+                    <label for="movie-name">Nombre:</label>
+                    <input type="text" id="movie-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="movie-year">Año:</label>
+                    <input type="number" id="movie-year" required>
+                </div>
+                <div class="form-group">
+                    <label for="movie-duration">Duración (minutos):</label>
+                    <input type="number" id="movie-duration" required>
+                </div>
+                <div>
+                    <button type="submit" id="save-button">Guardar</button>
+                    <button type="button" id="cancel-button" class="cancel hidden">Cancelar</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Movies Table -->
+        <h2>Lista de Películas</h2>
+        <table id="movies-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Año</th>
+                    <th>Duración (min)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="movies-body">
+                <!-- Table content will be populated dynamically -->
+            </tbody>
+        </table>
+        
+        <!-- Pagination -->
+        <div class="pagination">
+            <button id="prev-page" disabled>Anterior</button>
+            <span id="page-info">Página 1</span>
+            <button id="next-page">Siguiente</button>
+        </div>
     </div>
 
-    <div id="items-list"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
